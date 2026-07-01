@@ -8,9 +8,6 @@ def call() {
                 --scan .
                 --format XML
                 --format HTML
-                --noupdate
-                --disableRetired
-                --disableKnownExploited
                 --nvdApiKey=${NVD_API_KEY}
             """
         )
