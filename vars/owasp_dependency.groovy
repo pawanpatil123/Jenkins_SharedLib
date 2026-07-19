@@ -23,27 +23,26 @@
 
 def call() {
 
-    def dcHome = tool 'OWASP'
+    withCredentials([string(credentialsId: 'NVD_API_KEY', variable: 'NVD_API_KEY')]) {
 
-    sh """
-        mkdir -p dependency-check-report
-        mkdir -p /var/lib/jenkins/dependency-check-data
+        dependencyCheck(
+            odcInstallation: 'OWASP',
+            additionalArguments: """
+                --scan backend
+                --format XML
+                --format HTML
+                --failOnCVSS 9
+                --disableAssembly
+                --exclude node_modules
+                --exclude .git
+                --nvdApiKey=${NVD_API_KEY}
+            """
+        )
 
-        ${dcHome}/bin/dependency-check.sh \
-            --scan backend \
-            --data /var/lib/jenkins/dependency-check-data \
-            --format XML \
-            --format HTML \
-            --out dependency-check-report \
-            --failOnCVSS 9 \
-            --disableAssembly \
-            --exclude node_modules \
-            --exclude .git
-    """
-
-    dependencyCheckPublisher(
-        pattern: 'dependency-check-report/dependency-check-report.xml'
-    )
+        dependencyCheckPublisher(
+            pattern: '**/dependency-check-report.xml'
+        )
+    }
 }
 
 
