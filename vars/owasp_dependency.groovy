@@ -32,7 +32,6 @@ def call() {
         ${dcHome}/bin/dependency-check.sh \
             --scan backend \
             --data /var/lib/jenkins/dependency-check-data \
-            --noupdate \
             --format XML \
             --format HTML \
             --out dependency-check-report \
@@ -45,8 +44,6 @@ def call() {
     dependencyCheckPublisher(
         pattern: 'dependency-check-report/dependency-check-report.xml'
     )
-
-    archiveArtifacts artifacts: 'dependency-check-report/*', fingerprint: true
 }
 
 
